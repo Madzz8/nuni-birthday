@@ -233,3 +233,53 @@ p {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ===== Cute Cake SVG ===== */
+.cakeWrap{
+  margin: 14px auto 8px;
+  width: 240px;
+  height: 240px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.cakeSvg svg{
+  filter: drop-shadow(0 18px 25px rgba(255,79,160,0.18));
+}
+
+.cakeShadow{ fill: rgba(255,79,160,0.12); }
+
+.cakeBase{ fill:#ffffff; }
+.cakeMid{ fill:#ffe6f2; }
+.cakeTop{ fill:#ffb6d6; }
+
+.icing{ fill:#ffd3e8; opacity: 0.95; }
+.icing2{ fill:#ffc3df; opacity: 0.95; }
+
+.candle{ fill:#ffffff; stroke: rgba(255,79,160,0.35); stroke-width: 2; }
+.candleStripe{ stroke:#ff4fa0; stroke-width: 3; stroke-linecap: round; opacity: 0.65; }
+
+.flame{
+  transform-origin: 140px 24px;
+  animation: flameFlicker 0.9s infinite ease-in-out;
+}
+
+.flameOuter{ fill:#ff7a3d; }
+.flameInner{ fill:#ffd24d; }
+
+@keyframes flameFlicker{
+  0%,100%{ transform: rotate(-2deg) scale(1); opacity:1; }
+  50%{ transform: rotate(2deg) scale(1.06); opacity:0.92; }
+}
+
+/* حالة انطفاء الشعلة */
+.flame.out{
+  animation: none;
+  opacity: 0;
+  transform: scale(0.2);
+  transition: 0.35s ease;
+}
+
+.heart{ fill:#ff4fa0; opacity:0.45; }
+

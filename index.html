@@ -34,21 +34,55 @@
           <h2 class="hbd">🎂 عيد ميلاد سعيد يا نوني 🎂</h2>
       
           <div class="cakeWrap">
-            <div class="cake">
-              <div class="candle">
-                <div class="flame" id="flame"></div>
-              </div>
-              <div class="cakeTop"></div>
-              <div class="cakeMid"></div>
-              <div class="cakeBase"></div>
-            </div>
-          </div>
+  <div class="cakeSvg" aria-label="Birthday cake">
+    <svg viewBox="0 0 280 260" width="240" height="240" role="img">
+      <!-- ظل -->
+      <ellipse cx="140" cy="225" rx="95" ry="18" class="cakeShadow"></ellipse>
+
+      <!-- قاعدة الكيك -->
+      <rect x="55" y="135" rx="26" ry="26" width="170" height="85" class="cakeBase"></rect>
+      <path d="M70 150 C90 175, 120 130, 140 155 C165 185, 200 130, 210 160 L210 210 L70 210 Z" class="icing"></path>
+
+      <!-- طبقة وسط -->
+      <rect x="70" y="95" rx="22" ry="22" width="140" height="60" class="cakeMid"></rect>
+      <path d="M82 105 C98 128, 120 92, 140 115 C160 140, 185 98, 198 120 L198 140 L82 140 Z" class="icing2"></path>
+
+      <!-- طبقة عليا -->
+      <rect x="90" y="60" rx="18" ry="18" width="100" height="45" class="cakeTop"></rect>
+
+      <!-- شمعة -->
+      <g class="candleGroup">
+        <rect x="132" y="25" width="16" height="45" rx="8" class="candle"></rect>
+        <path d="M132 34 L148 34" class="candleStripe"></path>
+        <path d="M132 46 L148 46" class="candleStripe"></path>
+
+        <!-- شعلة -->
+        <g id="flame" class="flame">
+          <path d="M140 10
+                   C134 16, 135 24, 140 28
+                   C146 24, 146 16, 140 10 Z" class="flameOuter"></path>
+          <path d="M140 14
+                   C137 18, 138 23, 140 25
+                   C143 23, 143 18, 140 14 Z" class="flameInner"></path>
+        </g>
+      </g>
+
+      <!-- زينة قلوب -->
+      <g class="hearts">
+        <path d="M95 175 C90 165, 75 168, 78 182 C82 198, 95 203, 95 203 C95 203, 108 198, 112 182 C115 168, 100 165, 95 175 Z" class="heart"></path>
+        <path d="M185 175 C180 165, 165 168, 168 182 C172 198, 185 203, 185 203 C185 203, 198 198, 202 182 C205 168, 190 165, 185 175 Z" class="heart"></path>
+      </g>
+    </svg>
+  </div>
+</div>
+
+
       
           <div class="btnRow">
             <button id="micBtn" class="btn pink">انفخي الشمعة 🎤💨</button>
             <button id="blow" class="btn">طفيتها 💨</button>
           </div>
-          
+
           <p id="micStatus" class="note" style="min-height:18px;"></p>
 
           <div id="msg" class="msg hidden">

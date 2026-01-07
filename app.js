@@ -20,12 +20,16 @@ function hideButtons() {
   if (row) row.classList.add("hidden");
 }
 
+
 function revealMessage() {
   $("flame").classList.add("out");
   $("msg").classList.remove("hidden");
-  hideButtons();
-  setMicStatus("🎉");
+
+  // اخفاء أزرار النفخ/طفيتها بعد الإطفاء
+  const row = document.querySelector(".btnRow");
+  if (row) row.classList.add("hidden");
 }
+
 
 function showBirthday() {
   if (birthdayShown) return;
