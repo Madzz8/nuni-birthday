@@ -1,38 +1,45 @@
-// تشغيل المفاجأة يوم 8 بتوقيت السعودية (+03:00)
-const TARGET_ISO_KSA = "2026-01-08T00:00:00+03:00";
+// ===== إعداد وقت 12:00 يوم 8 بتوقيت السعودية =====
+const TARGET_ISO_KSA = new Date(Date.now() + 0 * 60 * 1000).toISOString();
 
-const $ = (id) => document.getElementById(id);
 const targetMs = Date.parse(TARGET_ISO_KSA);
 
+const $ = (id) => document.getElementById(id);
 function pad2(n){ return String(n).padStart(2, "0"); }
 
 let birthdayShown = false;
 let timer = null;
 
-const card = $("card");
+// عناصر
 const subtitle = $("subtitle");
-
-const micBtn = $("micBtn");
-const micStatus = $("micStatus");
-
+const testBtn = $("test");
+const overlay = $("focusOverlay");
 const celebrateLayer = $("celebrateLayer");
 const heartsWrap = $("hearts");
 const confettiWrap = $("confetti");
-const overlay = $("focusOverlay");
+const micBtn = $("micBtn");
+const blowBtn = $("blow");
+const btnRow = $("btnRow");
+const micStatus = $("micStatus");
 
-function setMicStatus(msg){
-  if (micStatus) micStatus.textContent = msg;
-}
+// لمنع تكرار احتفال الإطفاء
+let partyDone = false;
 
+// ===== الانتقال لمشهد الميلاد =====
 function setBirthdayTexts(){
-  subtitle.textContent = "اليوم يومك يا نوني… وقلبي يحتفل فيك 💗✨";
+  subtitle.textContent = "اليوم يومك… وقلبي يحتفل فيك 💗✨";
 }
 
 function showBirthday(){
   if (birthdayShown) return;
   birthdayShown = true;
 
-  if (timer){ clearInterval(timer); timer = null; }
+  if (timer){
+    clearInterval(timer);
+    timer = null;
+  }
+
+  // نخفي زر التجربة بمجرد الدخول للمشهد
+  testBtn.classList.add("hidden");
 
   const cd = $("countdown");
   const bd = $("birthday");
@@ -47,12 +54,21 @@ function showBirthday(){
   }, 500);
 }
 
+// ===== العداد + إظهار زر التجربة فقط بعد الساعة 12 =====
 function updateCountdown(){
-  const diff = targetMs - Date.now();
+  const now = Date.now();
+  const diff = targetMs - now;
+
+  // إذا دخلنا يوم 8 (12:00) — نقدر نظهر زر التجربة
+  // لكن بمجرد ما نبدأ مشهد الميلاد، بنخفيه
   if (diff <= 0){
+    testBtn.classList.add("hidden");
     showBirthday();
     return;
   }
+
+  // قبل الهدف: الزر مخفي
+  testBtn.classList.add("hidden");
 
   const totalSec = Math.floor(diff / 1000);
   const days = Math.floor(totalSec / 86400);
@@ -69,33 +85,35 @@ function updateCountdown(){
 timer = setInterval(updateCountdown, 250);
 updateCountdown();
 
-$("test").addEventListener("click", showBirthday);
+// زر التجربة (إذا تبي تستخدمه لاختبارك لاحقاً)
+testBtn.addEventListener("click", showBirthday);
 
-// ===== اخفاء الأزرار بشكل مضمون =====
+// ===== إخفاء الأزرار بشكل مضمون 100% =====
 function hideActionButtonsHard(){
-  const row = document.querySelector(".btnRow");
-  if (row) row.classList.add("hidden");
+  if (btnRow) btnRow.classList.add("hidden");
 
-  const b1 = $("micBtn");
-  const b2 = $("blow");
-  if (b1){ b1.disabled = true; b1.classList.add("hidden"); }
-  if (b2){ b2.disabled = true; b2.classList.add("hidden"); }
+  if (micBtn){
+    micBtn.disabled = true;
+    micBtn.classList.add("hidden");
+  }
+  if (blowBtn){
+    blowBtn.disabled = true;
+    blowBtn.classList.add("hidden");
+  }
 }
 
-// ===== قلوب + كونفيتي =====
+// ===== قلوب + كونفيتي + إيموجيز =====
 function spawnHearts(count){
   heartsWrap.innerHTML = "";
   for (let i=0;i<count;i++){
     const h = document.createElement("div");
     h.className = "heartFloat";
     const x = Math.random() * 100;
-    const dx = (Math.random() * 120 - 60).toFixed(0) + "px";
-    const dur = (1.8 + Math.random() * 1.2).toFixed(2) + "s";
-
+    const dx = (Math.random() * 140 - 70).toFixed(0) + "px";
+    const dur = (1.8 + Math.random() * 1.3).toFixed(2) + "s";
     h.style.setProperty("--x", x.toFixed(2) + "vw");
     h.style.setProperty("--dx", dx);
     h.style.setProperty("--dur", dur);
-
     heartsWrap.appendChild(h);
     setTimeout(() => h.remove(), (parseFloat(dur) * 1000) + 200);
   }
@@ -109,7 +127,7 @@ function spawnConfetti(count){
     c.className = "confettiPiece";
 
     const x = Math.random() * 100;
-    const dur = (2.2 + Math.random() * 1.6).toFixed(2) + "s";
+    const dur = (2.2 + Math.random() * 1.8).toFixed(2) + "s";
     const r = (Math.random() * 180).toFixed(0) + "deg";
     const col = colors[Math.floor(Math.random()*colors.length)];
 
@@ -118,17 +136,17 @@ function spawnConfetti(count){
     c.style.setProperty("--r", r);
     c.style.setProperty("--c", col);
 
+    // تنويع الحجم
     const w = 8 + Math.random() * 8;
     const h = 10 + Math.random() * 16;
     c.style.width = w.toFixed(0) + "px";
     c.style.height = h.toFixed(0) + "px";
 
     confettiWrap.appendChild(c);
-    setTimeout(() => c.remove(), (parseFloat(dur) * 1000) + 300);
+    setTimeout(() => c.remove(), (parseFloat(dur) * 1000) + 400);
   }
 }
 
-// ===== Emoji Burst =====
 function runEmojiBurst(){
   const layer = document.createElement("div");
   layer.className = "emojiBurst";
@@ -143,92 +161,89 @@ function runEmojiBurst(){
     e.textContent = emojis[Math.floor(Math.random()*emojis.length)];
 
     const x = (Math.random()*100).toFixed(2) + "vw";
-    const y = (20 + Math.random()*50).toFixed(2) + "vh";
+    const y = (22 + Math.random()*50).toFixed(2) + "vh";
     const size = (22 + Math.random()*18).toFixed(0) + "px";
     const dx = (Math.random()*260 - 130).toFixed(0) + "px";
     const dy = (-(220 + Math.random()*280)).toFixed(0) + "px";
     const rot = (Math.random()*260 - 130).toFixed(0) + "deg";
-    const dur = (1.2 + Math.random()*0.8).toFixed(2) + "s";
+    const dur = (1.2 + Math.random()*0.9).toFixed(2) + "s";
 
     e.style.setProperty("--x", x);
     e.style.setProperty("--y", y);
     e.style.setProperty("--size", size);
-    e.style.setProperty("--dx", dx + "px");
-    e.style.setProperty("--dy", dy + "px");
+    e.style.setProperty("--dx", dx);
+    e.style.setProperty("--dy", dy);
     e.style.setProperty("--rot", rot);
     e.style.setProperty("--dur", dur);
 
     layer.appendChild(e);
   }
 
-  setTimeout(() => layer.remove(), 2400);
+  setTimeout(() => layer.remove(), 2600);
 }
 
-// ===== تسلسل احترافي بعد الإطفاء =====
-let partyDone = false;
+// ===== التسلسل السينمائي بعد النفخ =====
+function setMicStatus(msg){
+  if (micStatus) micStatus.textContent = msg;
+}
 
 function blowDoneParty(){
   if (partyDone) return;
   partyDone = true;
 
-  // 1) أخفِ الأزرار فورًا
+  // 0) اخفاء الأزرار فوراً (مضمون)
   hideActionButtonsHard();
 
-  // 2) غمّق أطراف الصفحة
+  // 1) تغميق الأطراف للتركيز
   overlay.classList.remove("hidden");
   requestAnimationFrame(() => overlay.classList.add("on"));
 
-  // 3) تركيز: pop للكيكة
-  const cakeSvg = document.querySelector(".cakeSvg");
-  if (cakeSvg) cakeSvg.classList.add("pop");
+  // 2) تكبير الكيكة (Pop)
+  const cake = document.querySelector(".cakeSvg");
+  if (cake) cake.classList.add("pop");
 
-  // 4) طفي الشعلة بعد لحظة
+  // 3) اطفي الشعلة بعد لحظة
   setMicStatus("لحظة… ✨");
   setTimeout(() => {
     $("flame").classList.add("out");
   }, 520);
 
-  // 5) الاحتفال + ايموجيات
+  // 4) احتفال + ايموجيز
   setTimeout(() => {
-    setMicStatus("يا سلام 🎀");
-
     celebrateLayer.classList.remove("hidden");
     celebrateLayer.setAttribute("aria-hidden", "false");
 
-    card.classList.add("party");
-
-    spawnHearts(24);
-    spawnConfetti(65);
+    setMicStatus("🎀🎉🎉🎀");
+    spawnHearts(26);
+    spawnConfetti(70);
     runEmojiBurst();
 
-    // 6) بعد الاحتفال: اظهر الرسالة
+    // 5) بعد الاحتفال: تطلع الرسالة
     setTimeout(() => {
       const msg = $("msg");
       msg.classList.remove("hidden");
       msg.classList.add("reveal");
 
-      // خفّف التغميق بعد ما تقرأ
+      // نخفف التغميق بعد ما تقرأ
       setTimeout(() => {
         overlay.classList.remove("on");
         setTimeout(() => overlay.classList.add("hidden"), 450);
 
-        // اخفاء طبقة الاحتفال
+        // نخلي الاحتفال يختفي بعد شوي (اختياري)
         setTimeout(() => {
           celebrateLayer.classList.add("hidden");
           celebrateLayer.setAttribute("aria-hidden", "true");
           heartsWrap.innerHTML = "";
           confettiWrap.innerHTML = "";
-        }, 350);
+        }, 600);
 
       }, 2600);
-
     }, 1200);
-
   }, 980);
 }
 
-// زر الإطفاء اليدوي
-$("blow").addEventListener("click", () => {
+// زر “طفيتها”
+blowBtn.addEventListener("click", () => {
   showBirthday();
   blowDoneParty();
 });
@@ -303,7 +318,6 @@ async function startMicBlow(){
       if (hit >= HOLD_FRAMES){
         blown = true;
         stopAll();
-        micBtn.textContent = "يا سلام 🎀";
         setMicStatus("نفخة قوية! 🎉");
         blowDoneParty();
         return;

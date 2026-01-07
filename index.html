@@ -11,14 +11,14 @@
   <!-- تغميق الأطراف للتركيز -->
   <div id="focusOverlay" class="focusOverlay hidden" aria-hidden="true"></div>
 
-  <!-- طبقات الاحتفال (تظهر بعد النفخ) -->
+  <!-- طبقات الاحتفال -->
   <div id="celebrateLayer" class="celebrateLayer hidden" aria-hidden="true">
     <div id="confetti" class="confetti"></div>
     <div id="hearts" class="hearts"></div>
   </div>
 
   <div class="card" id="card">
-    <h1 id="title">🎀 يوم ميلاد أحلى بنوته بالدنيا 🎀</h1>
+    <h1 id="title">🎀 Happy Nuni Day 🎀</h1>
     <p id="subtitle">باقي شوي ونحتفل فيك ✨</p>
 
     <!-- Countdown -->
@@ -30,13 +30,13 @@
         <div class="box"><div class="num" id="s">00</div><div class="lab">ثانية</div></div>
       </div>
 
-      <button id="test" class="btn">جرّبي المفاجأة الآن ✨</button>
-      <p class="note">إذا ما فتح معك زر التجربة… بس أعيدي فتح الصفحة 💗</p>
+      <!-- زر التجربة: مخفي دائماً قبل الساعة 12 -->
+      <button id="test" class="btn hidden">جرّبي المفاجأة الحين ✨</button>
     </div>
 
     <!-- Birthday Scene -->
     <div id="birthday" class="hidden">
-      <h2 class="hbd" id="hbdTitle">🎂 عيد ميلاد سعيد يا نوني 🎂</h2>
+      <h2 class="hbd">🎂 عيد ميلاد سعيد يا نوني 🎂</h2>
 
       <!-- Cute Cake SVG -->
       <div class="cakeWrap">
@@ -54,10 +54,7 @@
 
             <g class="candleGroup">
               <rect x="132" y="25" width="16" height="45" rx="8" class="candle"></rect>
-              <path d="M132 34 L148 34" class="candleStripe"></path>
-              <path d="M132 46 L148 46" class="candleStripe"></path>
 
-              <!-- Flame -->
               <g id="flame" class="flame">
                 <path d="M140 10 C134 16, 135 24, 140 28 C146 24, 146 16, 140 10 Z" class="flameOuter"></path>
                 <path d="M140 14 C137 18, 138 23, 140 25 C143 23, 143 18, 140 14 Z" class="flameInner"></path>
@@ -67,7 +64,7 @@
         </div>
       </div>
 
-      <div class="btnRow">
+      <div class="btnRow" id="btnRow">
         <button id="micBtn" class="btn pink">انفخي الشمعة 🎤💨</button>
         <button id="blow" class="btn">طفيتها 💨</button>
       </div>
@@ -75,7 +72,12 @@
       <p id="micStatus" class="note"></p>
 
       <div id="msg" class="msg hidden">
-        <p>💗 نوني… يا رب أيامك كلها وردية، وضحكتك ما تغيب ✨</p>
+        <p>
+          وفي اللحظة اللي تنطفي فيها الشمعة…<br>
+          أبغى تعرفين إن أمنيتي لك أكبر من أي كلمة.<br>
+          الله يسعدك، ويحقق لك أحلامك، ويحفظ ابتسامتك دايمًا.<br>
+          كل سنة وأنتِ نونيتي… وكل سنة وأنا أفرح فيك أكثر 💗
+        </p>
         <div class="emojis">🐰 🐱 🎀 🌸 ✨ 💗</div>
       </div>
     </div>
