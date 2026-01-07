@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>عيد ميلاد نوني 🎀</title>
+
+  <!-- ربط ملف CSS -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="card" id="card">
+        <h1>🎀 أهلاً نوني 🎀</h1>
+        <p id="subtitle">باقي شوي ونحتفل بعيد ميلادك ✨</p>
+      
+        <!-- Countdown -->
+        <div id="countdown">
+          <div class="grid">
+            <div class="box"><div class="num" id="d">0</div><div class="lab">يوم</div></div>
+            <div class="box"><div class="num" id="h">00</div><div class="lab">ساعة</div></div>
+            <div class="box"><div class="num" id="m">00</div><div class="lab">دقيقة</div></div>
+            <div class="box"><div class="num" id="s">00</div><div class="lab">ثانية</div></div>
+
+          </div>
+      
+          <button id="test" class="btn">جرّبي المفاجأة الآن ✨</button>
+          <p class="note">المفاجأة تشتغل تلقائيًا يوم ٨ بتوقيت السعودية 💗</p>
+        </div>
+      
+        <!-- Birthday Scene -->
+        <div id="birthday" class="hidden">
+          <h2 class="hbd">🎂 عيد ميلاد سعيد يا نوني 🎂</h2>
+      
+          <div class="cakeWrap">
+            <div class="cake">
+              <div class="candle">
+                <div class="flame" id="flame"></div>
+              </div>
+              <div class="cakeTop"></div>
+              <div class="cakeMid"></div>
+              <div class="cakeBase"></div>
+            </div>
+          </div>
+      
+          <div class="btnRow">
+            <button id="blow" class="btn pink">طفيتها 💨</button>
+          </div>
+      
+          <div id="msg" class="msg hidden">
+            <p>💗 نوني… يارب أيامك كلها وردية وابتسامتك ما تغيب ✨</p>
+            <div class="emojis">🐰 🐱 🎀 🌸 ✨ 💗</div>
+          </div>
+        </div>
+      </div>
+      
+    
+  <!-- ربط ملف JavaScript -->
+  <script src="app.js"></script>
+</body>
+</html>
