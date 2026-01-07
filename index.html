@@ -8,9 +8,15 @@
 </head>
 
 <body>
+  <!-- طبقات الاحتفال (تظهر بعد النفخ) -->
+  <div id="celebrateLayer" class="celebrateLayer hidden" aria-hidden="true">
+    <div id="confetti" class="confetti"></div>
+    <div id="hearts" class="hearts"></div>
+  </div>
+
   <div class="card" id="card">
-    <h1>🎀 أهلاً نوني 🎀</h1>
-    <p id="subtitle">باقي شوي ونحتفل بعيد ميلادك ✨</p>
+    <h1 id="title">🎀 يوم ميلاد أحلى بنوته بالدنيا 🎀</h1>
+    <p id="subtitle">باقي شوي ونحتفل فيك ✨</p>
 
     <!-- Countdown -->
     <div id="countdown">
@@ -22,12 +28,12 @@
       </div>
 
       <button id="test" class="btn">جرّبي المفاجأة الآن ✨</button>
-      <p class="note">المفاجأة تشتغل تلقائيًا يوم ٨ بتوقيت السعودية 💗</p>
+      <p class="note">إذا ما فتح معك زر التجربة… بس أعيدي فتح الصفحة 💗</p>
     </div>
 
     <!-- Birthday Scene -->
     <div id="birthday" class="hidden">
-      <h2 class="hbd">🎂 عيد ميلاد سعيد يا نوني 🎂</h2>
+      <h2 class="hbd" id="hbdTitle">🎂 عيد ميلاد سعيد يا نوني 🎂</h2>
 
       <!-- Cute Cake SVG -->
       <div class="cakeWrap">
@@ -66,7 +72,7 @@
       <p id="micStatus" class="note"></p>
 
       <div id="msg" class="msg hidden">
-        <p>💗 نوني… يارب أيامك كلها وردية وابتسامتك ما تغيب ✨</p>
+        <p>💗 نوني… يا رب أيامك كلها وردية، وضحكتك ما تغيب ✨</p>
         <div class="emojis">🐰 🐱 🎀 🌸 ✨ 💗</div>
       </div>
     </div>

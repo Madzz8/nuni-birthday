@@ -1,11 +1,6 @@
 /* Reset بسيط */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+*{ margin:0; padding:0; box-sizing:border-box; }
 
-/* خلفية الصفحة */
 body{
   min-height:100vh;
   font-family:"Segoe UI", Tahoma, sans-serif;
@@ -15,10 +10,22 @@ body{
   align-items:center;
   text-align:center;
   direction: rtl;
+  overflow:hidden;
 }
+
+/* طبقة الاحتفال */
+.celebrateLayer{
+  position: fixed;
+  inset: 0;
+  pointer-events:none;
+  z-index: 10;
+}
+.hidden{ display:none; }
 
 /* كرت المحتوى */
 .card{
+  position: relative;
+  z-index: 20;
   background:white;
   padding:30px 25px;
   border-radius:25px;
@@ -27,18 +34,26 @@ body{
   width:90%;
 }
 
+.card.party{
+  animation: cardShake 900ms ease-in-out 1;
+}
+@keyframes cardShake{
+  0%{ transform: translate(0,0) rotate(0deg); }
+  15%{ transform: translate(2px,-2px) rotate(0.4deg); }
+  30%{ transform: translate(-2px,2px) rotate(-0.4deg); }
+  45%{ transform: translate(2px,1px) rotate(0.3deg); }
+  60%{ transform: translate(-2px,-1px) rotate(-0.3deg); }
+  100%{ transform: translate(0,0) rotate(0deg); }
+}
+
 /* العنوان */
 h1{
   color:#ff4fa0;
-  font-size:32px;
-  margin-bottom:15px;
+  font-size:28px;
+  margin-bottom:12px;
 }
 
-p{
-  font-size:18px;
-  color:#555;
-}
-
+p{ font-size:18px; color:#555; }
 #subtitle{ margin-bottom:18px; }
 
 .grid{
@@ -92,14 +107,11 @@ p{
   opacity:0.8;
 }
 
-.hidden{ display:none; }
-
 .hbd{
   margin-top:10px;
   color:#ff4fa0;
 }
 
-/* أزرار النفخ */
 .btnRow{
   display:flex;
   gap:10px;
@@ -108,7 +120,6 @@ p{
   margin-top:10px;
 }
 
-/* رسالة */
 .msg{
   margin-top:12px;
   background: rgba(255,255,255,0.75);
@@ -117,22 +128,14 @@ p{
   box-shadow:0 12px 22px rgba(255,79,160,0.12);
 }
 
-.emojis{
-  margin-top:8px;
-  font-size:22px;
-}
+.emojis{ margin-top:8px; font-size:22px; }
 
 /* أنيميشن دخول/خروج */
 .fade-out{ animation: fadeOut .5s ease forwards; }
 .fade-in{ animation: fadeIn .6s ease forwards; }
 
-@keyframes fadeOut{
-  to{ opacity:0; transform: translateY(8px); }
-}
-@keyframes fadeIn{
-  from{ opacity:0; transform: translateY(8px); }
-  to{ opacity:1; transform: translateY(0); }
-}
+@keyframes fadeOut{ to{ opacity:0; transform: translateY(8px); } }
+@keyframes fadeIn{ from{ opacity:0; transform: translateY(8px); } to{ opacity:1; transform: translateY(0); } }
 
 /* ===== Cute Cake SVG ===== */
 .cakeWrap{
@@ -148,12 +151,20 @@ p{
   filter: drop-shadow(0 18px 25px rgba(255,79,160,0.18));
 }
 
-.cakeShadow{ fill: rgba(255,79,160,0.12); }
+.cakeSvg.party svg{
+  animation: cakePop 900ms cubic-bezier(.2,.9,.2,1) 1;
+}
+@keyframes cakePop{
+  0%{ transform: scale(0.98); }
+  35%{ transform: scale(1.05); }
+  70%{ transform: scale(1.01); }
+  100%{ transform: scale(1); }
+}
 
+.cakeShadow{ fill: rgba(255,79,160,0.12); }
 .cakeBase{ fill:#ffffff; }
 .cakeMid{ fill:#ffe6f2; }
 .cakeTop{ fill:#ffb6d6; }
-
 .icing{ fill:#ffd3e8; opacity:0.95; }
 .icing2{ fill:#ffc3df; opacity:0.95; }
 
@@ -164,7 +175,6 @@ p{
   transform-origin: 140px 24px;
   animation: flameFlicker 0.9s infinite ease-in-out;
 }
-
 .flameOuter{ fill:#ff7a3d; }
 .flameInner{ fill:#ffd24d; }
 
@@ -173,10 +183,64 @@ p{
   50%{ transform: rotate(2deg) scale(1.06); opacity:0.92; }
 }
 
-/* انطفاء الشعلة */
 .flame.out{
   animation:none;
   opacity:0;
   transform: scale(0.2);
   transition:0.35s ease;
+}
+
+/* ===== قلوب تطلع (خرافي) ===== */
+.hearts{ position:absolute; inset:0; overflow:hidden; }
+
+.heartFloat{
+  position:absolute;
+  left: var(--x);
+  bottom: -40px;
+  width: 18px;
+  height: 18px;
+  transform: rotate(45deg);
+  background: rgba(255,79,160,0.92);
+  border-radius: 4px;
+  animation: heartUp var(--dur) ease-out forwards;
+  filter: drop-shadow(0 10px 16px rgba(255,79,160,0.22));
+}
+.heartFloat::before,
+.heartFloat::after{
+  content:"";
+  position:absolute;
+  width: 18px;
+  height: 18px;
+  background: inherit;
+  border-radius: 50%;
+}
+.heartFloat::before{ left: -9px; top: 0; }
+.heartFloat::after{ left: 0; top: -9px; }
+
+@keyframes heartUp{
+  0%{ transform: translate(0,0) rotate(45deg) scale(0.9); opacity:0; }
+  10%{ opacity:1; }
+  100%{ transform: translate(var(--dx), -520px) rotate(45deg) scale(1.25); opacity:0; }
+}
+
+/* ===== كونفيتي لطيف ===== */
+.confetti{ position:absolute; inset:0; overflow:hidden; }
+.confettiPiece{
+  position:absolute;
+  top: -20px;
+  left: var(--x);
+  width: 10px;
+  height: 16px;
+  background: var(--c);
+  border-radius: 3px;
+  opacity: 0.95;
+  transform: rotate(var(--r));
+  animation: confettiFall var(--dur) linear forwards;
+}
+
+@keyframes confettiFall{
+  to{
+    transform: translateY(720px) rotate(calc(var(--r) + 240deg));
+    opacity: 0;
+  }
 }
