@@ -10,7 +10,6 @@ let birthdayShown = false;
 let timer = null;
 
 const card = $("card");
-const title = $("title");
 const subtitle = $("subtitle");
 
 const micBtn = $("micBtn");
@@ -19,18 +18,13 @@ const micStatus = $("micStatus");
 const celebrateLayer = $("celebrateLayer");
 const heartsWrap = $("hearts");
 const confettiWrap = $("confetti");
+const overlay = $("focusOverlay");
 
 function setMicStatus(msg){
   if (micStatus) micStatus.textContent = msg;
 }
 
-function hideButtons(){
-  const row = document.querySelector(".btnRow");
-  if (row) row.classList.add("hidden");
-}
-
 function setBirthdayTexts(){
-  // جملة أجمل لما يصير اليوم يوم ميلادها
   subtitle.textContent = "اليوم يومك يا نوني… وقلبي يحتفل فيك 💗✨";
 }
 
@@ -75,54 +69,20 @@ function updateCountdown(){
 timer = setInterval(updateCountdown, 250);
 updateCountdown();
 
-// زر تجربة المفاجأة
 $("test").addEventListener("click", showBirthday);
 
-// زر الإطفاء اليدوي
-$("blow").addEventListener("click", () => {
-  showBirthday();
-  blowDoneParty();
-});
+// ===== اخفاء الأزرار بشكل مضمون =====
+function hideActionButtonsHard(){
+  const row = document.querySelector(".btnRow");
+  if (row) row.classList.add("hidden");
 
-// ===== احتفال خرافي بعد الإطفاء =====
-let partyDone = false;
-
-function blowDoneParty(){
-  // امنع تكرار الاحتفال
-  if (partyDone) return;
-  partyDone = true;
-
-  // اطفي الشعلة + الرسالة + اخفاء الأزرار
-  $("flame").classList.add("out");
-  $("msg").classList.remove("hidden");
-  hideButtons();
-
-  // نص لطيف بعد الإطفاء
-  setMicStatus("يا سلام… يارب كل سنة وأنتي أجمل 💗");
-
-  // فعّل طبقة الاحتفال
-  celebrateLayer.classList.remove("hidden");
-  celebrateLayer.setAttribute("aria-hidden", "false");
-
-  // حركة للكرت والكيك
-  card.classList.add("party");
-  const cakeSvg = document.querySelector(".cakeSvg");
-  if (cakeSvg) cakeSvg.classList.add("party");
-
-  // قلوب + كونفيتي
-  spawnHearts(26);
-  spawnConfetti(60);
-
-  // نظافة بعد وقت
-  setTimeout(() => {
-    celebrateLayer.classList.add("hidden");
-    celebrateLayer.setAttribute("aria-hidden", "true");
-    // امسح البقايا
-    heartsWrap.innerHTML = "";
-    confettiWrap.innerHTML = "";
-  }, 4200);
+  const b1 = $("micBtn");
+  const b2 = $("blow");
+  if (b1){ b1.disabled = true; b1.classList.add("hidden"); }
+  if (b2){ b2.disabled = true; b2.classList.add("hidden"); }
 }
 
+// ===== قلوب + كونفيتي =====
 function spawnHearts(count){
   heartsWrap.innerHTML = "";
   for (let i=0;i<count;i++){
@@ -136,13 +96,7 @@ function spawnHearts(count){
     h.style.setProperty("--dx", dx);
     h.style.setProperty("--dur", dur);
 
-    // تنويع خفيف بالحجم
-    const scale = 0.9 + Math.random() * 0.8;
-    h.style.transform = `rotate(45deg) scale(${scale})`;
-
     heartsWrap.appendChild(h);
-
-    // إزالة العنصر بعد نهاية الأنميشن
     setTimeout(() => h.remove(), (parseFloat(dur) * 1000) + 200);
   }
 }
@@ -164,7 +118,6 @@ function spawnConfetti(count){
     c.style.setProperty("--r", r);
     c.style.setProperty("--c", col);
 
-    // تنويع بالحجم
     const w = 8 + Math.random() * 8;
     const h = 10 + Math.random() * 16;
     c.style.width = w.toFixed(0) + "px";
@@ -174,6 +127,111 @@ function spawnConfetti(count){
     setTimeout(() => c.remove(), (parseFloat(dur) * 1000) + 300);
   }
 }
+
+// ===== Emoji Burst =====
+function runEmojiBurst(){
+  const layer = document.createElement("div");
+  layer.className = "emojiBurst";
+  document.body.appendChild(layer);
+
+  const emojis = ["💗","🎀","🐰","🐇","🌸","✨","🩷","🎉"];
+  const count = 28;
+
+  for(let i=0;i<count;i++){
+    const e = document.createElement("div");
+    e.className = "emoji";
+    e.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+
+    const x = (Math.random()*100).toFixed(2) + "vw";
+    const y = (20 + Math.random()*50).toFixed(2) + "vh";
+    const size = (22 + Math.random()*18).toFixed(0) + "px";
+    const dx = (Math.random()*260 - 130).toFixed(0) + "px";
+    const dy = (-(220 + Math.random()*280)).toFixed(0) + "px";
+    const rot = (Math.random()*260 - 130).toFixed(0) + "deg";
+    const dur = (1.2 + Math.random()*0.8).toFixed(2) + "s";
+
+    e.style.setProperty("--x", x);
+    e.style.setProperty("--y", y);
+    e.style.setProperty("--size", size);
+    e.style.setProperty("--dx", dx + "px");
+    e.style.setProperty("--dy", dy + "px");
+    e.style.setProperty("--rot", rot);
+    e.style.setProperty("--dur", dur);
+
+    layer.appendChild(e);
+  }
+
+  setTimeout(() => layer.remove(), 2400);
+}
+
+// ===== تسلسل احترافي بعد الإطفاء =====
+let partyDone = false;
+
+function blowDoneParty(){
+  if (partyDone) return;
+  partyDone = true;
+
+  // 1) أخفِ الأزرار فورًا
+  hideActionButtonsHard();
+
+  // 2) غمّق أطراف الصفحة
+  overlay.classList.remove("hidden");
+  requestAnimationFrame(() => overlay.classList.add("on"));
+
+  // 3) تركيز: pop للكيكة
+  const cakeSvg = document.querySelector(".cakeSvg");
+  if (cakeSvg) cakeSvg.classList.add("pop");
+
+  // 4) طفي الشعلة بعد لحظة
+  setMicStatus("لحظة… ✨");
+  setTimeout(() => {
+    $("flame").classList.add("out");
+  }, 520);
+
+  // 5) الاحتفال + ايموجيات
+  setTimeout(() => {
+    setMicStatus("يا سلام 🎀");
+
+    celebrateLayer.classList.remove("hidden");
+    celebrateLayer.setAttribute("aria-hidden", "false");
+
+    card.classList.add("party");
+
+    spawnHearts(24);
+    spawnConfetti(65);
+    runEmojiBurst();
+
+    // 6) بعد الاحتفال: اظهر الرسالة
+    setTimeout(() => {
+      const msg = $("msg");
+      msg.classList.remove("hidden");
+      msg.classList.add("reveal");
+
+      // خفّف التغميق بعد ما تقرأ
+      setTimeout(() => {
+        overlay.classList.remove("on");
+        setTimeout(() => overlay.classList.add("hidden"), 450);
+
+        // اخفاء طبقة الاحتفال
+        setTimeout(() => {
+          celebrateLayer.classList.add("hidden");
+          celebrateLayer.setAttribute("aria-hidden", "true");
+          heartsWrap.innerHTML = "";
+          confettiWrap.innerHTML = "";
+        }, 350);
+
+      }, 2600);
+
+    }, 1200);
+
+  }, 980);
+}
+
+// زر الإطفاء اليدوي
+$("blow").addEventListener("click", () => {
+  showBirthday();
+  blowDoneParty();
+});
 
 // ===== Mic Blow Detection (سهل) =====
 let blown = false;
@@ -201,9 +259,9 @@ async function startMicBlow(){
 
     const data = new Uint8Array(analyser.fftSize);
 
-    // حساسية النفخ (أسهل)
-    const THRESHOLD = 0.07;   // أقل = أسهل للنفخ
-    const NOISE_GATE = 5.0;   // لو الكلام يطفّي بسرعة ارفعها (6.5)
+    // حساسية النفخ
+    const THRESHOLD = 0.07;
+    const NOISE_GATE = 5.0;   // لو الكلام يطفّي بسرعة ارفعها 6.5
     const HOLD_FRAMES = 4;
     const TIMEOUT = 9000;
 
