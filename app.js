@@ -3,7 +3,7 @@ const TARGET_ISO_KSA = "2026-01-08T00:00:00+03:00";
 const $ = (id) => document.getElementById(id);
 const targetMs = Date.parse(TARGET_ISO_KSA);
 
-function pad2(n) { return String(n).padStart(2, "0"); }
+function pad2(n){ return String(n).padStart(2, "0"); }
 
 let birthdayShown = false;
 let timer = null;
@@ -11,31 +11,27 @@ let timer = null;
 const micBtn = $("micBtn");
 const micStatus = $("micStatus");
 
-function setMicStatus(msg) {
+function setMicStatus(msg){
   if (micStatus) micStatus.textContent = msg;
 }
 
-function hideButtons() {
+function hideButtons(){
   const row = document.querySelector(".btnRow");
   if (row) row.classList.add("hidden");
 }
 
-
-function revealMessage() {
+function revealMessage(){
   $("flame").classList.add("out");
   $("msg").classList.remove("hidden");
-
-  // اخفاء أزرار النفخ/طفيتها بعد الإطفاء
-  const row = document.querySelector(".btnRow");
-  if (row) row.classList.add("hidden");
+  hideButtons();
+  setMicStatus("🎉");
 }
 
-
-function showBirthday() {
+function showBirthday(){
   if (birthdayShown) return;
   birthdayShown = true;
 
-  if (timer) { clearInterval(timer); timer = null; }
+  if (timer){ clearInterval(timer); timer = null; }
 
   const cd = $("countdown");
   const bd = $("birthday");
@@ -50,9 +46,9 @@ function showBirthday() {
   }, 500);
 }
 
-function updateCountdown() {
+function updateCountdown(){
   const diff = targetMs - Date.now();
-  if (diff <= 0) { showBirthday(); return; }
+  if (diff <= 0){ showBirthday(); return; }
 
   const totalSec = Math.floor(diff / 1000);
   const days = Math.floor(totalSec / 86400);
@@ -75,19 +71,17 @@ $("blow").addEventListener("click", () => { showBirthday(); revealMessage(); });
 /* ===== Mic Blow (سهل) ===== */
 let blown = false;
 
-async function startMicBlow() {
+async function startMicBlow(){
   showBirthday();
-
   if (blown) return;
 
-  if (!window.isSecureContext) {
+  if (!window.isSecureContext){
     setMicStatus("افتحيها من GitHub Pages (https) عشان المايك يشتغل.");
     return;
   }
 
-  try {
+  try{
     setMicStatus("جاري تجهيز المايك…");
-
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -99,7 +93,8 @@ async function startMicBlow() {
 
     const data = new Uint8Array(analyser.fftSize);
 
-    const THRESHOLD = 0.075; // حساسية أعلى
+    // إعدادات حساسية النفخ
+    const THRESHOLD = 0.075;
     const NOISE_GATE = 5.2;
     const HOLD_FRAMES = 5;
     const TIMEOUT = 9000;
@@ -121,34 +116,34 @@ async function startMicBlow() {
 
       // RMS
       let sum = 0;
-      for (let i = 0; i < data.length; i++) {
-        const v = (data[i] - 128) / 128;
-        sum += v * v;
+      for (let i=0;i<data.length;i++){
+        const v = (data[i]-128)/128;
+        sum += v*v;
       }
       const rms = Math.sqrt(sum / data.length);
 
       // noisiness
       let diffSum = 0;
-      for (let i = 1; i < data.length; i++) {
-        diffSum += Math.abs(data[i] - data[i - 1]);
+      for (let i=1;i<data.length;i++){
+        diffSum += Math.abs(data[i]-data[i-1]);
       }
       const noisiness = diffSum / data.length;
 
       const looksLikeBlow = (rms > THRESHOLD) && (noisiness > NOISE_GATE);
 
       if (looksLikeBlow) hit++;
-      else hit = Math.max(0, hit - 1);
+      else hit = Math.max(0, hit-1);
 
-      if (hit >= HOLD_FRAMES) {
+      if (hit >= HOLD_FRAMES){
         blown = true;
         stopAll();
-        micBtn.textContent = "سلام يا 🎀";
-        setMicStatus("🎉 نفخة قوية! انطفأت");
+        micBtn.textContent = "يا سلام 🎀";
+        setMicStatus("نفخة قوية! انطفأت 🎉");
         revealMessage();
         return;
       }
 
-      if (Date.now() - start > TIMEOUT) {
+      if (Date.now() - start > TIMEOUT){
         stopAll();
         micBtn.disabled = false;
         micBtn.textContent = "ما ضبط؟ جرّبي مرة ثانية 🎤";
@@ -160,7 +155,7 @@ async function startMicBlow() {
     };
 
     loop();
-  } catch (e) {
+  }catch(e){
     micBtn.disabled = false;
     micBtn.textContent = "انفخي الشمعة 🎤💨";
     setMicStatus("اسمحي بالمايك من إعدادات الموقع.");
@@ -169,5 +164,3 @@ async function startMicBlow() {
 }
 
 micBtn.addEventListener("click", startMicBlow);
-
-console.log("APP JS LOADED ✅");
