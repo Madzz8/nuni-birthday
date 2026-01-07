@@ -186,8 +186,9 @@ async function startMicBlow(){
     src.connect(analyser);
 
     const data = new Uint8Array(analyser.fftSize);
-    const THRESHOLD = 0.18; // لو حساس زيادة: 0.22 / لو ضعيف: 0.15
-    const TIMEOUT = 6000;
+    const THRESHOLD = 0.12;   // أسهل للنفخ
+    const TIMEOUT = 9000;     // وقت أطول شوي
+    const HOLD_FRAMES = 10;   // لازم يتجاوز العتبة ~10 فريم (حوالي 0.16 ثانية)
     const start = Date.now();
 
     micBtn.textContent = "انفخي الآن… 💨";
@@ -197,6 +198,8 @@ async function startMicBlow(){
       stream.getTracks().forEach(t => t.stop());
       ctx.close();
     };
+
+    let hitFrames = 0;
 
     const loop = () => {
       analyser.getByteTimeDomainData(data);
@@ -209,13 +212,32 @@ async function startMicBlow(){
       }
       const rms = Math.sqrt(sum / data.length);
 
-      if(rms > THRESHOLD){
+      // مقياس بسيط للـ "ضجيج": فرق بين العينات (يتحسس للنفخ أكثر من الكلام)
+      let diffSum = 0;
+      for(let i=1;i<data.length;i++){
+        diffSum += Math.abs(data[i] - data[i-1]);
+      }
+      const noisiness = diffSum / data.length; // كل ما زاد = ضجيج أكثر
+
+
+      // نفخ غالبًا يعطي noisiness أعلى من الكلام، فخلّنا نطلب الاثنين
+      const looksLikeBlow = (rms > THRESHOLD) && (noisiness > 6.5);
+
+      if (looksLikeBlow){
+        hitFrames++;
+      } else {
+        hitFrames = Math.max(0, hitFrames - 1);
+      }
+
+      if (hitFrames >= HOLD_FRAMES){
         blown = true;
         stopAll();
         revealMessage();
         micBtn.textContent = "يا سلام 🎀";
+        setMicStatus("نفخة قوية! انطفَت 🎉");
         return;
       }
+
 
       if(Date.now() - start > TIMEOUT){
         stopAll();
