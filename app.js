@@ -72,9 +72,102 @@ $("test").addEventListener("click", showBirthday);
 // زر الإطفاء اليدوي
 $("blow").addEventListener("click", revealMessage);
 
-// ===== Mic Blow Detection =====
+// ===== Mic Blow Detection (with clear status) =====
 const micBtn = $("micBtn");
+const micStatus = $("micStatus");
 let blown = false;
+
+function setMicStatus(msg){
+  if (micStatus) micStatus.textContent = msg;
+}
+
+async function startMicBlow(){
+  // لازم تكون في مشهد الكيكة
+  showBirthday();
+
+  setMicStatus("جاري تجهيز المايك…");
+
+  // تشخيص: لازم https أو localhost
+  if (!window.isSecureContext) {
+    setMicStatus("لازم تفتحي الصفحة عبر https (GitHub Pages) أو localhost.");
+    return;
+  }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    setMicStatus("جهازك/المتصفح لا يدعم المايك هنا.");
+    return;
+  }
+
+  if (blown) {
+    setMicStatus("تم إطفاء الشمعة مسبقًا 🎀");
+    return;
+  }
+
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AudioContext();
+    const src = ctx.createMediaStreamSource(stream);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 1024;
+    src.connect(analyser);
+
+    const data = new Uint8Array(analyser.fftSize);
+    const THRESHOLD = 0.18;  // جرّب 0.15 لو ما يلقط النفخ
+    const TIMEOUT = 7000;
+    const start = Date.now();
+
+    micBtn.textContent = "انفخي الآن… 💨";
+    micBtn.disabled = true;
+    setMicStatus("انفخي باتجاه المايك 💨");
+
+    const stopAll = () => {
+      stream.getTracks().forEach(t => t.stop());
+      ctx.close();
+    };
+
+    const loop = () => {
+      analyser.getByteTimeDomainData(data);
+
+      let sum = 0;
+      for(let i=0;i<data.length;i++){
+        const v = (data[i] - 128) / 128;
+        sum += v * v;
+      }
+      const rms = Math.sqrt(sum / data.length);
+
+      if (rms > THRESHOLD){
+        blown = true;
+        stopAll();
+        revealMessage();
+        micBtn.textContent = "يا سلام 🎀";
+        setMicStatus("انطفَت 🎉");
+        return;
+      }
+
+      if (Date.now() - start > TIMEOUT){
+        stopAll();
+        micBtn.disabled = false;
+        micBtn.textContent = "ما ضبط؟ جرّبي مرة ثانية 🎤";
+        setMicStatus("ما التقطت نفخة قوية — جرّبي أقرب للمايك.");
+        return;
+      }
+
+      requestAnimationFrame(loop);
+    };
+
+    loop();
+  }catch(e){
+    micBtn.disabled = false;
+    micBtn.textContent = "انفخي الشمعة 🎤💨";
+    // رسالة مفهومة بدل “ولا شيء”
+    setMicStatus("رفضتي إذن المايك أو ما اشتغل. افتحي إعدادات الموقع واسمحي بالمايك.");
+    console.error(e);
+  }
+}
+
+micBtn.addEventListener("click", startMicBlow);
+
 
 async function startMicBlow(){
   // لازم تكون في مشهد الكيكة أولًا
