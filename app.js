@@ -1,6 +1,5 @@
 // ===== إعداد وقت 12:00 يوم 8 بتوقيت السعودية =====
-const TARGET_ISO_KSA = new Date(Date.now() + 0 * 60 * 1000).toISOString();
-
+const TARGET_ISO_KSA = "2026-01-08T00:00:00+03:00";
 const targetMs = Date.parse(TARGET_ISO_KSA);
 
 const $ = (id) => document.getElementById(id);
